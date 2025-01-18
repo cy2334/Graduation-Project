@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package demo;
+option csharp_namespace = "My.GRPC.Demo";
+import  "demo_model.proto";
+service Demo{
+  rpc GetCustomerById(GetCustomerByIdRequest) returns (GetCustomerByIdResponse);
+}

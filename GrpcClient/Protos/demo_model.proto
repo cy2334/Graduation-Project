@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package demo;
+option csharp_namespace = "My.GRPC.Demo";
+
+import "google/protobuf/wrappers.proto"; //可空类型
+import "google/protobuf/timestamp.proto";//google的包，用来时间日期
+
+//定义入参实体
+message GetCustomerByIdRequest {
+  int32 id = 1;
+}
+
+message GetCustomerByIdResponse {
+  int32 id = 1;
+  string name = 2;
+  float weight = 3;
+  bool is_new = 4;
+  bytes avatar = 5;
+  Gender gender = 7;//使用枚举
+  repeated string phone_numbers = 13;     //list类型加repeated 
+  google.protobuf.Timestamp createtime = 11;    //在c#代码中赋值时： CreateTime = Timestamp.FromDateTime(DateTime.UtcNow);
+  repeated string mobile1 = 8; //Mobile被禁用了所以在名字后面加了个数字1
+  optional int32 create_user_id = 14; //可选参数
+  google.protobuf.Int64Value  update_user_id = 15;//可空参数
+
+  //占用下标，为了防止客户端与服务端约定不一致，需要禁用掉某些值，如果上面的tag违反了这里定义的内容会报错，生成失败
+  reserved 9, 20, 300 to max; //下标9、20、300 至 最大值全部禁用
+  reserved "Mobile"; //按名称禁用,不区分大小写
+}
+
+enum Gender{
+  option allow_alias = true;   //开启别名
+  NOT_SPECIFIED = 0;
+  MAN = 1;
+  WOMAN = 2;
+  MALE = 1;
+  FEMALE = 2;
+  //多个字可以段拥有相同数值，但是需要allow_alias设置成true
+  //定义枚举时第一个选项就是默认值、枚举值在接收的时候如果没找到指定的值时就会采用默认值
+  //不建议枚举值设置成负数
+  reserved "Boy", "Nan", "Nv"; //枚举中也可以禁用字段
+}
