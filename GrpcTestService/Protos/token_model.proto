@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package token;
+option csharp_namespace = "My.GRPC.Demo";
+
+message LoginRequest{
+  string user_name = 1;
+  string password = 2;
+}
+
+message LoginResponse{
+  string token = 1;
+}

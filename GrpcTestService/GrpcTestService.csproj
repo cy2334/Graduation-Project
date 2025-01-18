@@ -10,8 +10,24 @@
     <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.57.0"/>
         <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.67.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.69.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
     </ItemGroup>
     <ItemGroup>
         <Protobuf Include="Protos/*.proto" GrpcService="Server" ProtoRoot ="Protos"/>
     </ItemGroup>
+    <ItemGroup>
+      <None Remove="private.key" />
+      <Content Include="private.key">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="public.key" />
+      <Content Include="public.key">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+   
 </Project>
