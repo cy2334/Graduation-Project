@@ -8,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gRPC_Client", "gRPC_Client"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcWebClient", "GrpcWebClient\GrpcWebClient.csproj", "{6BD9D4CA-2CB9-4C2F-8585-D7AEAEBDCA65}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{9B2E8CFE-011E-458E-B259-182ED0AAC6D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6BD9D4CA-2CB9-4C2F-8585-D7AEAEBDCA65} = {04B6DF6E-89CD-47FB-AC3B-F36673517079}
+		{3E99EF9F-59DF-423D-93B3-F3C9F61AE01C} = {04B6DF6E-89CD-47FB-AC3B-F36673517079}
+		{EB08E528-7253-4CA0-92D4-E9389C31A667} = {9B2E8CFE-011E-458E-B259-182ED0AAC6D3}
 	EndGlobalSection
 EndGlobal
