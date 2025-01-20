@@ -1,5 +1,6 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using GrpcTestService.Interceptor;
 using My.GRPC.Demo;
 
 namespace GrpcTestService.Services;
@@ -20,6 +21,8 @@ public class DemoService :Demo.DemoBase
         var claims = context.GetHttpContext().User.Claims.ToArray();
         var res = new GetCustomerByIdResponse();
         res.Createtime = Timestamp.FromDateTime(DateTime.UtcNow);
+        
+        
         return await Task.FromResult(res);
     }
 }

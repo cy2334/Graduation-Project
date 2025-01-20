@@ -1,6 +1,7 @@
 using Calzolari.Grpc.AspNetCore.Validation;
 using FluentValidation;
 using GrpcTestService.Authentication;
+using GrpcTestService.Interceptor;
 using GrpcTestService.Services;
 using GrpcTestService.Valid;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,14 +10,20 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 注册日志记录拦截器
+builder.Services.AddSingleton<LoggingInterceptor>();
 // Add services to the container.
 builder.Services.AddGrpc(options =>
 {
     options.EnableMessageValidation();
+    options.Interceptors.Add<LoggingInterceptor>(); // 将拦截器加入管道
 });
-builder.Services.AddGrpcReflection();//添加GRPC反射服务
+//添加GRPC反射服务
+builder.Services.AddGrpcReflection();
+
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValid>();
 builder.Services.AddGrpcValidation();
+
 var rsaKeyHelper = new RsaKeyHelper(privateKeyPath: "private.key", "public.key");
 // 添加授权服务
 builder.Services.AddAuthorization();
@@ -37,6 +44,7 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new RsaSecurityKey(rsaKeyHelper.PublicKey)
         };
     });
+//CreateHostBuilder(args).Build();
 
 var app = builder.Build();
 app.MapGrpcReflectionService().AllowAnonymous();
@@ -53,3 +61,20 @@ app.MapGet("/",
         "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 app.Run();
+static IHostBuilder CreateHostBuilder(string[] args) =>
+    Host.CreateDefaultBuilder(args)
+        .ConfigureLogging((context, logging) =>
+        {
+            // 配置日志记录到控制台
+            logging.AddConsole();
+        })
+        .ConfigureServices((hostContext, services) =>
+        {
+            // 注册 gRPC 服务和拦截器
+            services.AddGrpc(options =>
+            {
+                options.Interceptors.Add<LoggingInterceptor>();  // 添加拦截器
+            });
+
+            services.AddSingleton<LoggingInterceptor>();  // 注册拦截器
+        });
