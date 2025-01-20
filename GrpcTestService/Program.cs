@@ -1,5 +1,8 @@
+using Calzolari.Grpc.AspNetCore.Validation;
+using FluentValidation;
 using GrpcTestService.Authentication;
 using GrpcTestService.Services;
+using GrpcTestService.Valid;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -7,9 +10,13 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options =>
+{
+    options.EnableMessageValidation();
+});
 builder.Services.AddGrpcReflection();//添加GRPC反射服务
-
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValid>();
+builder.Services.AddGrpcValidation();
 var rsaKeyHelper = new RsaKeyHelper(privateKeyPath: "private.key", "public.key");
 // 添加授权服务
 builder.Services.AddAuthorization();

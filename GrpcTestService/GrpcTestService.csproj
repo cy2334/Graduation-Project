@@ -8,7 +8,9 @@
     
 
     <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.57.0"/>
+        <PackageReference Include="Calzolari.Grpc.AspNetCore.Validation" Version="8.1.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0-preview1" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.63.0"/>
         <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.67.0" />
         <PackageReference Include="Grpc.Tools" Version="2.69.0">
           <PrivateAssets>all</PrivateAssets>
