@@ -6,6 +6,14 @@ namespace GrpcTestService.Services.Common;
 
 public class GetUserProfileNameByToken
 {
+    /// <summary>
+    /// 通过Token获取Profile
+    /// 从请求的头部获取 Authorization 信息（Bearer <token>）
+    /// var token = context.RequestHeaders.FirstOrDefault(header => header.Key == "authorization")?.Value?.Replace("Bearer ", "");
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="RpcException"></exception>
     public Profile getUserProfileNameByToken(string? token)
     {
         // 解析 JWT Token
@@ -28,7 +36,9 @@ public class GetUserProfileNameByToken
         return profile;
     }
 }
-
+/// <summary>
+/// 用户Profile
+/// </summary>
 public class Profile
 { 
     // Constructor to initialize Profile
