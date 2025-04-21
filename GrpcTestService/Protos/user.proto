@@ -1,0 +1,10 @@
+syntax = "proto3";
+package user;
+import  "user_model.proto";
+option  csharp_namespace = "My.GRPC.Demo";
+
+service User{
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc VIPRegister(VIPRegisterRequest) returns (VIPRegisterResponse);
+}

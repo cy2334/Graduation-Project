@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+package warehouse;
+option  csharp_namespace = "My.GRPC.Demo";
+
+message WarehouseRequest{
+  string address = 1;
+  string capacity = 2;
+  string name = 3;
+}
+message WarehouseResponse{
+  string status = 1;
+}

@@ -1,0 +1,8 @@
+﻿syntax = "proto3";
+package warehouse;
+import  "warehouse_model.proto";
+option  csharp_namespace = "My.GRPC.Demo";
+
+service Warehouse{
+  rpc WarehouseRegister(WarehouseRequest) returns (WarehouseResponse);
+}

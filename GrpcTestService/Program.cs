@@ -3,8 +3,10 @@ using FluentValidation;
 using GrpcTestService.Authentication;
 using GrpcTestService.Interceptor;
 using GrpcTestService.Services;
+using GrpcTestService.Services.UserService;
 using GrpcTestService.Valid;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -20,7 +22,9 @@ builder.Services.AddGrpc(options =>
 });
 //添加GRPC反射服务
 builder.Services.AddGrpcReflection();
-
+// 注入上下文
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValid>();
 builder.Services.AddGrpcValidation();
 
@@ -56,6 +60,8 @@ app.UseAuthorization();
 app.MapGrpcService<GreeterService>();
 app.MapGrpcService<DemoService>();//启用中间件
 app.MapGrpcService<TokenService>();
+app.MapGrpcService<DriverRegisterService>();
+app.MapGrpcService<RegisterVIPService>();
 app.MapGet("/",
     () =>
         "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
