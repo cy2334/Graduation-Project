@@ -10,12 +10,6 @@ message LoginRequest{
 
 message LoginResponse{
   string token = 1;
-  UserInfo userinfo = 2;
-}
-message UserInfo{
-  string name = 1;
-  int32  userid = 2;
-  string role = 3;
 }
 message RegisterRequest{
   string username = 1;

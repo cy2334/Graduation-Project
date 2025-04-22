@@ -37,18 +37,3 @@ message WarehouseTransportReponse{
   int32 Distance = 1;
   float cost = 2;
 }
-message WarehouseDisplayRequest{
-  int32 pagesize = 1;
-  int32 pageindex = 2;
-}
-message WarehouseDisplayReponse{
-  repeated WarehouseInfo warehouseinfos = 1;
-  int32 pagesize = 2;
-  int32 pageindex = 3;
-  int32 total = 4;
-}
-message WarehouseInfo{
-  string warehousename = 1;
-  int32  totalvolume = 2;
-  int32  Residualvolume = 3;
-}

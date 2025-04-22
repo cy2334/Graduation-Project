@@ -1,0 +1,8 @@
+﻿syntax = "proto3";
+import "driver_model.proto";
+package driver;
+option  csharp_namespace = "My.GRPC.Demo";
+
+service Driver{
+  rpc DriverRegister(DriverRegisterRequest) returns (DriverRegisterResponse);
+}

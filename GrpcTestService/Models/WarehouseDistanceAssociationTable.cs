@@ -2,8 +2,8 @@
 
 public class WarehouseDistanceAssociationTable
 {
-    int ID {get; set;}
-    string WarehouseAName { get; set; }
-    string WarehouseBName { get; set; }
-    int Distance { get; set; }
+    public int Id {get; set;}
+    public string WarehouseAName { get; set; }
+    public string WarehouseBName { get; set; }
+    public int Distance { get; set; }
 }

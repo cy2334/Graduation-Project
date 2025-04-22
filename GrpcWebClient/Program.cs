@@ -1,5 +1,7 @@
-using GrpcTestService;
+﻿using GrpcTestService;
+using GrpcWebClient.Model;
 using Microsoft.AspNetCore.Mvc;
+using My.GRPC.Demo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthorization();
 
 // 添加 gRPC 客户端
-builder.Services.AddGrpcClient<Greeter.GreeterClient>(options =>
+builder.Services.AddGrpcClient<User.UserClient>(options =>
 {
     options.Address = new Uri("http://localhost:5069"); 
 })
@@ -50,65 +52,45 @@ app.UseHttpsRedirection();
 // ✅ 确保 AddAuthorization() 先注册，否则 UseAuthorization() 会报错
 app.UseAuthorization();
 
-// 定义天气数据
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
 
-// 异步 gRPC 请求
-app.MapGet("/weatherforecast", async ([FromServices] Greeter.GreeterClient client, HttpContext context) =>
+app.MapPost("/api/login", async ([FromServices] User.UserClient client, [FromBody] LoginRequestDto loginDto) =>
     {
-        // 从请求头中获取 JWT 令牌
-        var token = context.Request.Headers["Authorization"].ToString();
-
-        // 创建 HttpClient 实例
-        using var httpClient = new HttpClient();
-
-        // 设置请求头（传递 JWT 令牌）
-        httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
-
-        // 调用后端服务的 HTTP 端点
-        var response = await httpClient.GetAsync("http://localhost:5069/api/user/profile");
-        if (!response.IsSuccessStatusCode)
+        // 调用 gRPC 的 Login 方法
+        var res = await client.LoginAsync(new LoginRequest
         {
-            return Results.BadRequest("Failed to fetch user profile.");
-        }
+            Username = loginDto.UserName,
+            Password = loginDto.Password
+        });
 
-        // 解析响应内容
-        var profile = await response.Content.ReadFromJsonAsync<Profile>();
-
-        // 调用 gRPC 服务，传递用户信息
-        var res = await client.SayHelloAsync(new HelloRequest { Name = profile.Name });
-
-        // 生成天气数据
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast
-            (
-                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]
-            )).ToArray();
-
-        // 返回结果
-        return Results.Json(new { message = res.Message, forecast, user = profile.Name });
+        return Results.Ok(new
+        {
+            message = "登录成功",
+            token = res.Token
+        });
     })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+    .WithName("Login")
+    .WithOpenApi(); // Swagger 中显示
+app.MapPost("/api/register", async ([FromServices] User.UserClient client, [FromBody] RegisterRequestDto registerDto) =>
+    {
+        // 调用 gRPC 的 Register 方法
+        var res = await client.RegisterAsync(new RegisterRequest
+        {
+            Username = registerDto.Username,
+            Email = registerDto.Email,
+            Password = registerDto.Password
+        });
+
+        return res.Status == "Success" 
+            ? Results.Ok(new { message = "注册成功" }) 
+            : Results.BadRequest(new { message = "注册失败" });
+    })
+    .WithName("Register")
+    .WithOpenApi(); // Swagger 中显示
+
 
 // ✅ 添加控制器支持，否则会报错
 app.MapControllers();
 
 app.Run();
 
-// 定义 `WeatherForecast` 记录类型
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
-public class Profile
-{
-    public long Id { get; set; }
-    public string Name { get; set; }
-    public string Role { get; set; }
-}
+
