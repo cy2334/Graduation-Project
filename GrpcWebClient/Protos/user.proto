@@ -9,4 +9,6 @@ service User{
   rpc VIPRegister(VIPRegisterRequest) returns (VIPRegisterResponse);
   rpc RegisterAdmin(RegisterAdminRequest) returns (RegisterAdminResponse);
   rpc CalculateAmount(CalculateAmountRequest) returns (CalculateAmountResponse);
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
+  rpc GetOrders(GetOrdersRequest) returns (GetOrdersResponse);
 }

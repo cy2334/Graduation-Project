@@ -1,0 +1,52 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "user_model.proto";
+package admin;
+option csharp_namespace = "My.GRPC.Demo";
+
+message AdminRegistrationRequest{
+  int32 userId = 1;
+  string adminPassword = 2;
+}
+message AdminRegistrationResponse{
+  string status = 1;
+}
+message OrderOverviewRequest{
+  string username = 1;
+  int32 PageIndex = 2;
+  int32 PageSize = 3;
+}
+message OrderOverviewResponse{
+  repeated  user.OrderInfo orders = 1;
+  int32 PageIndex = 2;
+  int32 PageSize = 3;
+  int32 Total = 4;
+}
+
+message DailySettlementRequest{
+  int32 PageSize = 1;
+  int32 PageIndex = 2;
+}
+message DailySettlementResponse{
+    repeated OverdueUser overdueUser = 1;
+    int32  PageSize =2;
+    int32  PageIndex = 3;
+    int32 total = 4;
+}
+
+message OverdueUserListRequest{
+  int32 PageSize = 1;
+  int32 PageIndex = 2;
+  string UserName = 3; // 模糊搜索关键词
+}
+message OverdueUserListResponset{
+  repeated OverdueUser overdueUser = 1;
+  int32  PageSize =2;
+  int32  PageIndex = 3;
+  int32 total = 4;
+}
+message OverdueUser{
+  string UserName = 1;
+  int32 overdue_amount = 2;
+  string Email = 3;
+}

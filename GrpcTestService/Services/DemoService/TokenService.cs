@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Google.Protobuf.Collections;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using GrpcTestService.Authentication;
 using GrpcTestService.Models;
@@ -50,7 +51,6 @@ public class TokenService :User.UserBase
         
         var res = new LoginResponse();
         res.Token = tokenHandler.WriteToken(token);
-        
         return await Task.FromResult(res);
     }
     public override Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
@@ -129,25 +129,42 @@ public class TokenService :User.UserBase
         {
             return Task.FromResult(new VIPRegisterResponse
             {
-                Status = "找不到用户，创建VIP失败"
+                Status = "找不到用户，创建/充值VIP失败"
             });
         }
 
-        var vip = new VIPInfomation
+        var vip = _dbContext.VIPInfomations.FirstOrDefault(v => v.UserId == user.Id);
+        if (vip == null)
         {
-            UserId = user.Id,
-            recharge = request.Recharge
-        };
+            // 没有VIP信息，新建
+            vip = new VIPInfomation
+            {
+                UserId = user.Id,
+                recharge = request.Recharge
+            };
+            _dbContext.VIPInfomations.Add(vip);
+            user.IsVIP = true;
 
-        _dbContext.VIPInfomations.Add(vip);
-        user.IsVIP = true;
-        _dbContext.SaveChanges();
+            _dbContext.SaveChanges();
 
-        return Task.FromResult(new VIPRegisterResponse
+            return Task.FromResult(new VIPRegisterResponse
+            {
+                Status = "创建VIP成功"
+            });
+        }
+        else
         {
-            Status = "创建VIP成功"
-        });
+            // 已是VIP，充值
+            vip.recharge += request.Recharge;
+            _dbContext.SaveChanges();
+
+            return Task.FromResult(new VIPRegisterResponse
+            {
+                Status = "充值成功，当前余额：" + vip.recharge
+            });
+        }
     }
+
     public override Task<RegisterAdminResponse> RegisterAdmin(RegisterAdminRequest request, ServerCallContext context)
     {
         var user = _dbContext.Users.FirstOrDefault(v => v.Name == request.Username);
@@ -170,5 +187,98 @@ public class TokenService :User.UserBase
         {
             Status = user.Name + "以为管理员"
         });
+    }
+
+    public override Task<GetUserInfoResponse> GetUserInfo(GetUserInfoRequest request, ServerCallContext context)
+    {
+        var response = new GetUserInfoResponse();
+        var user = _dbContext.Users.FirstOrDefault(v => v.Id == request.UserID);
+        if (user == null)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound,"用户不存在"));  
+        }
+        var vipinfo = _dbContext.VIPInfomations.FirstOrDefault(v => v.UserId == user.Id);
+        if (vipinfo == null)
+        {
+            response = new GetUserInfoResponse()
+            {
+                Cost = 0,
+                CostofDay = 0,
+                Userstatus = "用户不为vip"
+            };
+        }
+        else
+        {
+            response = new GetUserInfoResponse()
+            {
+                Cost = vipinfo.recharge,
+                CostofDay = vipinfo.Dailyspending,
+            };
+            if (vipinfo.recharge > vipinfo.Dailyspending)
+            {
+                response.Userstatus = "用户正常";
+            }
+            else
+            {
+                response.Userstatus = "用户已欠费";
+            }
+        }
+       
+        return Task.FromResult(response);
+    }
+
+    public override Task<GetOrdersResponse> GetOrders(GetOrdersRequest request, ServerCallContext context)
+    {
+        // 1. 查 VIP
+        var vip = _dbContext.VIPInfomations
+            .FirstOrDefault(v => v.UserId == request.UserId);
+        if (vip == null)
+            throw new RpcException(new Status(StatusCode.NotFound, "未找到该用户的 VIP 信息"));
+
+        // 2. 拿所有订单，按时间倒序
+        var allOrders = _dbContext.Orders
+            .Where(o => o.VIPId == vip.Id)
+            .OrderByDescending(o => o.OrderDate);
+
+        // 3. 统计总数
+        int total = allOrders.Count();
+
+        // 4. 分页
+        var paged = allOrders
+            .Skip((request.PageIndex - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToList();
+
+        // 5. 拼装 List<OrderInfo>
+        var infos = new List<OrderInfo>(paged.Count);
+        foreach (var order in paged)
+        {
+            var wa     = _dbContext.Warehouses.Find(order.WarehouseAId);
+            var wb     = _dbContext.Warehouses.Find(order.WarehouseBId);
+            var driver = _dbContext.Drivers.FirstOrDefault(d=>d.WarehouseDistanceId == order.DistanceId);
+            var car    = _dbContext.Cars.FirstOrDefault(c => c.WarehousId == order.WarehouseAId);
+
+            infos.Add(new OrderInfo
+            {
+                WarehouseAName     = wa?.Name ?? "",
+                WarehouseBName     = wb?.Name ?? "",
+                Price              = order.Price,
+                DriverName         = driver?.Name ?? "",
+                DriverPhone        = driver?.PhoneNumber ?? "",
+                LicensePlateNumber = car?.LicensePlateNumber ?? "",
+                OrderDate          = order.OrderDate.ToUniversalTime().ToTimestamp()
+            });
+        }
+
+        // 6. 构造返回值
+        var response = new GetOrdersResponse
+        {
+            PageIndex = request.PageIndex,
+            PageSize  = request.PageSize,
+            Total     = total
+        };
+        response.Orders.AddRange(infos);
+
+        return Task.FromResult(response);
     }
 }

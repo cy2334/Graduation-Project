@@ -1,6 +1,7 @@
 syntax = "proto3";
 package user;
 import  "user_model.proto";
+import "google/protobuf/empty.proto";
 option  csharp_namespace = "My.GRPC.Demo";
 
 service User{
@@ -9,4 +10,6 @@ service User{
   rpc VIPRegister(VIPRegisterRequest) returns (VIPRegisterResponse);
   rpc RegisterAdmin(RegisterAdminRequest) returns (RegisterAdminResponse);
   rpc CalculateAmount(CalculateAmountRequest) returns (CalculateAmountResponse);
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
+  rpc GetOrders(GetOrdersRequest) returns (GetOrdersResponse);
 }

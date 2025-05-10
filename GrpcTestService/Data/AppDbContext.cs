@@ -11,12 +11,12 @@ public class AppDbContext : DbContext
     // 表示数据库中的 Users 表
     public DbSet<User> Users { get; set; }
     public DbSet<Car> Cars { get; set; }
-    public DbSet<UserWarehouseAssociationTable> UserWarehouseAssociationTables { get; set; }
     public DbSet<Warehouse> Warehouses { get; set; }
     public DbSet<WarehouseDistanceAssociationTable> WarehouseDistanceAssociationTables { get; set; }
     public DbSet<Driver> Drivers { get; set; }
     public DbSet<VIPInfomation> VIPInfomations { get; set; }
     public DbSet<VIPAndWarehouseRelations> VIPAndWarehouseRelations { get; set; }
+    public DbSet<Order> Orders { get; set; }
     // 配置数据库连接
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

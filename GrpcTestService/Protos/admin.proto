@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+package admin;
+import  "admin_model.proto";
+option  csharp_namespace = "My.GRPC.Demo";
+
+service Admin{
+  rpc AdminRegistration(AdminRegistrationRequest) returns (AdminRegistrationResponse);
+  rpc OrderOverview(OrderOverviewRequest) returns (OrderOverviewResponse);
+  rpc DailySettlement(DailySettlementRequest) returns (DailySettlementResponse);
+  rpc OverdueUserList (OverdueUserListRequest) returns (OverdueUserListResponset);
+}

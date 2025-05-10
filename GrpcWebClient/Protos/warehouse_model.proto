@@ -6,6 +6,8 @@ message WarehouseRequest{
   string address = 1;
   int32 volume = 2;
   string name = 3;
+  string LicensePlateNumber = 4;
+  int32  LoadingCapacity = 5;
 }
 message WarehouseResponse{
   string status = 1;
@@ -14,6 +16,8 @@ message WarehouseDistanceRequest{
   string warehouseAName = 1;
   string warehouseBName = 2;
   int32  Distance = 3;
+  string DriverName = 5;
+  string PhoneNumber = 6;
 }
 message WarehouseDistanceReponse{
   string status = 1;
@@ -32,8 +36,34 @@ message WarehouseTransportRequest{
   string warehouseAName = 1;
   string warehouseBName = 2;
   string name = 3;
+  int32 volume = 4;
 }
 message WarehouseTransportReponse{
   int32 Distance = 1;
   float cost = 2;
+}
+message WarehouseDisplayRequest{
+  int32 pagesize = 1;
+  int32 pageindex = 2;
+}
+message WarehouseDisplayReponse{
+  repeated WarehouseInfo warehouseinfos = 1;
+  int32 pagesize = 2;
+  int32 pageindex = 3;
+  int32 total = 4;
+}
+message WarehouseInfo{
+  string warehousename = 1;
+  int32  totalvolume = 2;
+  int32  Residualvolume = 3;
+}
+
+message GoodsOutboundRequest{
+  string warehouseName = 1;
+  int32 volumeofgoods = 2;
+  string name = 3;
+}
+message GoodsOutboundResponse{
+  int32 RemainingGoods = 1;
+  string status = 2;
 }
