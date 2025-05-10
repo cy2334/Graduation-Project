@@ -102,6 +102,42 @@
           <Generator>MSBuild:Compile</Generator>
           <GrpcService>Server</GrpcService>
         </Protobuf>
+        <Protobuf Update="Protos\admin.proto">
+          <GrpcServices>Both</GrpcServices>
+          <Access>Public</Access>
+          <ProtoCompile>True</ProtoCompile>
+          <CompileOutputs>True</CompileOutputs>
+          <OutputDir>obj\Debug\net8.0\</OutputDir>
+          <Generator>MSBuild:Compile</Generator>
+          <GrpcService>Server</GrpcService>
+        </Protobuf>
+        <Protobuf Update="Protos\admin_model.proto">
+          <GrpcServices>Both</GrpcServices>
+          <Access>Public</Access>
+          <ProtoCompile>True</ProtoCompile>
+          <CompileOutputs>True</CompileOutputs>
+          <OutputDir>obj\Debug\net8.0\</OutputDir>
+          <Generator>MSBuild:Compile</Generator>
+          <GrpcService>Server</GrpcService>
+        </Protobuf>
+        <Protobuf Update="Protos\admin.proto">
+          <GrpcServices>Both</GrpcServices>
+          <Access>Public</Access>
+          <ProtoCompile>True</ProtoCompile>
+          <CompileOutputs>True</CompileOutputs>
+          <OutputDir>obj\Debug\net8.0\</OutputDir>
+          <Generator>MSBuild:Compile</Generator>
+          <GrpcService>Server</GrpcService>
+        </Protobuf>
+        <Protobuf Update="Protos\admin_model.proto">
+          <GrpcServices>Both</GrpcServices>
+          <Access>Public</Access>
+          <ProtoCompile>True</ProtoCompile>
+          <CompileOutputs>True</CompileOutputs>
+          <OutputDir>obj\Debug\net8.0\</OutputDir>
+          <Generator>MSBuild:Compile</Generator>
+          <GrpcService>Server</GrpcService>
+        </Protobuf>
     </ItemGroup>
 
     <ItemGroup>

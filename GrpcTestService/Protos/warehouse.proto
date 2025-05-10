@@ -9,4 +9,5 @@ service Warehouse{
   rpc Warehousingofgoods(WarehousingofgoodsRequest) returns (WarehousingofgoodsReponse);
   rpc WarehouseTransport(WarehouseTransportRequest) returns (WarehouseTransportReponse);
   rpc WarehouseDisplay(WarehouseDisplayRequest) returns (WarehouseDisplayReponse);
+  rpc GoodsOutbound(GoodsOutboundRequest) returns (GoodsOutboundResponse);
 }

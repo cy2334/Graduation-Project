@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "google/protobuf/timestamp.proto";
 package user;
 option csharp_namespace = "My.GRPC.Demo";
 
@@ -42,4 +42,32 @@ message CalculateAmountResponse{
 message VIPInfo{
   string VIPname = 1;
   int32  recharge = 2;
+}
+message GetUserInfoRequest{
+  int32  userID = 1;
+}
+message GetUserInfoResponse{
+  int32  cost = 1;
+  int32  costofDay = 2;
+  string Userstatus = 3;
+}
+message GetOrdersRequest{
+  int32 userId = 1;
+  int32 PageIndex = 2;
+  int32 PageSize = 3;
+}
+message GetOrdersResponse{
+  repeated  OrderInfo orders = 1;
+  int32 PageIndex = 2;
+  int32 PageSize = 3;
+  int32 Total = 4;
+}
+message OrderInfo{
+  string WarehouseAName = 1;
+  string WarehouseBName = 2;
+  int32  Price = 3;
+  string DriverName = 4;
+  string DriverPhone = 5;
+  string LicensePlateNumber = 6;
+  google.protobuf.Timestamp OrderDate = 7;
 }

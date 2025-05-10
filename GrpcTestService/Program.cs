@@ -4,6 +4,7 @@ using GrpcTestService.Authentication;
 using GrpcTestService.Interceptor;
 using GrpcTestService.Services;
 using GrpcTestService.Services.UserService;
+using GrpcTestService.Services.WarehouseService;
 using GrpcTestService.Valid;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +62,8 @@ app.MapGrpcService<GreeterService>();
 app.MapGrpcService<DemoService>();//启用中间件
 app.MapGrpcService<TokenService>();
 app.MapGrpcService<DriverRegisterService>();
+app.MapGrpcService<WarehouseService>();
+app.MapGrpcService<AdminService>();
 app.MapGet("/",
     () =>
         "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
